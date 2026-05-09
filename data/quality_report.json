@@ -1,0 +1,154 @@
+{
+  "adapter_counts": {
+    "adni_nifti": 1857,
+    "adni_tabular": 1737,
+    "brsdincer": 373,
+    "ixi": 579,
+    "lipidomics": 212,
+    "oasis_cross": 235,
+    "oasis_long": 373,
+    "rabieelkharoua": 2149
+  },
+  "adni_merge": {
+    "joined_adni_nifti": 1528,
+    "standalone_adni_nifti": 329
+  },
+  "cohort_counts": {
+    "ADNI_NIFTI": 329,
+    "ADNI_TAB": 1737,
+    "BRSDINCER": 373,
+    "IXI": 579,
+    "LIPID": 212,
+    "OASIS1": 235,
+    "OASIS2": 373,
+    "RABIE": 2149
+  },
+  "cohort_diagnosis_counts": {
+    "ADNI_NIFTI|AD": 41,
+    "ADNI_NIFTI|CN": 163,
+    "ADNI_NIFTI|EMCI": 125,
+    "ADNI_TAB|AD": 342,
+    "ADNI_TAB|CN": 417,
+    "ADNI_TAB|EMCI": 310,
+    "ADNI_TAB|LMCI": 562,
+    "ADNI_TAB|SMC": 106,
+    "BRSDINCER|AD": 44,
+    "BRSDINCER|CN": 206,
+    "BRSDINCER|EMCI": 123,
+    "IXI|CN": 579,
+    "LIPID|AD": 103,
+    "LIPID|CN": 20,
+    "LIPID|EMCI": 89,
+    "OASIS1|AD": 30,
+    "OASIS1|CN": 135,
+    "OASIS1|EMCI": 70,
+    "OASIS2|AD": 44,
+    "OASIS2|CN": 206,
+    "OASIS2|EMCI": 123,
+    "RABIE|AD": 760,
+    "RABIE|CN": 1389
+  },
+  "diagnosis_counts": {
+    "AD": 1364,
+    "CN": 3115,
+    "EMCI": 840,
+    "LMCI": 562,
+    "SMC": 106
+  },
+  "is_rich_count": 1528,
+  "modality_pattern_counts": {
+    "blood+clinical_comorbid+clinical_demo+clinical_lifestyle+cognitive": 2149,
+    "clinical_comorbid+clinical_demo+cognitive+genetic+mri_raw+mri_vol": 1528,
+    "clinical_comorbid+clinical_demo+cognitive+mri_raw": 329,
+    "clinical_demo+cognitive": 1,
+    "clinical_demo+cognitive+genetic": 13,
+    "clinical_demo+cognitive+genetic+lipid": 196,
+    "clinical_demo+cognitive+genetic+mri_vol": 209,
+    "clinical_demo+cognitive+lipid": 2,
+    "clinical_demo+cognitive+mri_vol": 981,
+    "clinical_demo+mri_raw": 579
+  },
+  "mri_t1_uri_count": 2436,
+  "row_count": 5987,
+  "skipped_counts": {
+    "adni_nifti": {},
+    "adni_tabular": {},
+    "brsdincer": {},
+    "ixi": {},
+    "lipidomics": {},
+    "oasis_cross": {
+      "blank_cdr": 201
+    },
+    "oasis_long": {},
+    "rabieelkharoua": {}
+  },
+  "split_ratios": {
+    "calib": {
+      "cohort_counts": {
+        "ADNI_NIFTI": 48,
+        "ADNI_TAB": 260,
+        "BRSDINCER": 56,
+        "IXI": 87,
+        "LIPID": 33,
+        "OASIS1": 36,
+        "OASIS2": 52,
+        "RABIE": 323
+      },
+      "diagnosis_counts": {
+        "AD": 204,
+        "CN": 466,
+        "EMCI": 125,
+        "LMCI": 84,
+        "SMC": 16
+      },
+      "row_ratio": 0.1495,
+      "rows": 895,
+      "subjects": 865
+    },
+    "test": {
+      "cohort_counts": {
+        "ADNI_NIFTI": 50,
+        "ADNI_TAB": 262,
+        "BRSDINCER": 56,
+        "IXI": 87,
+        "LIPID": 31,
+        "OASIS1": 34,
+        "OASIS2": 62,
+        "RABIE": 322
+      },
+      "diagnosis_counts": {
+        "AD": 206,
+        "CN": 474,
+        "EMCI": 123,
+        "LMCI": 85,
+        "SMC": 16
+      },
+      "row_ratio": 0.151,
+      "rows": 904,
+      "subjects": 865
+    },
+    "train": {
+      "cohort_counts": {
+        "ADNI_NIFTI": 231,
+        "ADNI_TAB": 1215,
+        "BRSDINCER": 261,
+        "IXI": 405,
+        "LIPID": 148,
+        "OASIS1": 165,
+        "OASIS2": 259,
+        "RABIE": 1504
+      },
+      "diagnosis_counts": {
+        "AD": 954,
+        "CN": 2175,
+        "EMCI": 592,
+        "LMCI": 393,
+        "SMC": 74
+      },
+      "row_ratio": 0.6995,
+      "rows": 4188,
+      "subjects": 4034
+    }
+  },
+  "unique_subject_visits": 5987
+}

@@ -1,0 +1,26 @@
+"""Canonical cognitive columns for Phase 1 and downstream encoders."""
+
+COGNITIVE_COLUMNS: tuple[str, ...] = (
+    "mmse",
+    "adas11",
+    "adas13",
+    "cdr",
+    "cdrsb",
+    "adl",
+    "functional_assessment",
+    "memory_complaints",
+    "behavioral_problems",
+    "confusion",
+    "disorientation",
+    "personality_changes",
+    "difficulty_completing_tasks",
+    "forgetfulness",
+    "log_mem_immediate",
+    "log_mem_delayed",
+    "gds_total",
+    "ravlt_immediate",
+    "ravlt_learning",
+    "ravlt_forgetting",
+    "ravlt_perc_forgetting",
+    "hmse",
+)

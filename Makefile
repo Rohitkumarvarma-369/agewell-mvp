@@ -1,5 +1,6 @@
 .PHONY: bootstrap up down logs health test test-unit test-integration lint format clean \
-        build_master train_teacher train_student calibrate evaluate demo baseline \
+        build_master split eda data-gates dvc-init dvc-pin phase1 \
+        train_teacher train_student calibrate evaluate demo baseline \
         agent serve dashboard
 
 SHELL := /bin/bash
@@ -46,6 +47,23 @@ clean:
 
 build_master:
 	uv run python -m agewell.scripts.build_master
+
+split:
+	uv run python -m agewell.scripts.split
+
+eda:
+	uv run python -m agewell.scripts.eda
+
+data-gates:
+	uv run python -m agewell.scripts.data_gates
+
+dvc-init:
+	@test -d .dvc || uv run dvc init
+
+dvc-pin: dvc-init
+	uv run dvc add data/master.parquet data/splits/train.parquet data/splits/calib.parquet data/splits/test.parquet
+
+phase1: build_master split eda data-gates dvc-pin
 
 train_teacher:
 	uv run python -m agewell.scripts.train_teacher

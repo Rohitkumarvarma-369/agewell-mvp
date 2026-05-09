@@ -1,0 +1,34 @@
+master_path: data/master.parquet
+splits_dir: data/splits/
+kaggle_root: ${oc.env:KAGGLE_ROOT,/home/rohit/kaggle-iisc/kaggle-cli/downloads}
+
+subdir:
+  adni_tabular: tabular/sarthakkanjariya_alzheimer-dataset
+  adni_nifti: imaging/afaqkhan012_adni-nifti-3d
+  oasis_cross: tabular/jboysen_mri-and-alzheimers
+  oasis_long: tabular/jboysen_mri-and-alzheimers
+  brsdincer: tabular/brsdincer_alzheimer-features
+  rabieelkharoua: tabular/rabieelkharoua_alzheimers-disease-dataset
+  lipidomics: tabular/fereshtehjozaghkar_plasma-lipidomics
+  ixi: imaging/kingpowa_preprocessed-ixi-fs8
+
+exclude: []
+
+split:
+  scheme: subject_disjoint_stratified_70_15_15
+  seed: 42
+
+label_harmonization:
+  cdr_to_diag:
+    "0.0": {label: CN, conf: 0.95}
+    "0.5": {label: EMCI, conf: 0.85}
+    "1.0": {label: AD, conf: 0.90}
+    ">=2.0": {label: AD, conf: 0.95}
+  rabie_binary_conf: 0.7
+  lipid_explicit_conf: 0.9
+
+is_rich_modalities:
+  - clinical_demo
+  - cognitive
+  - mri_vol
+  - mri_raw

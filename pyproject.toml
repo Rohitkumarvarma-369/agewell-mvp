@@ -60,6 +60,7 @@ mvp = [
   "torchvision>=0.19",
   "transformers>=4.45",
   "verifiers>=0.1.14,<0.2",
+  "ydata-profiling>=4.18,<5",
 ]
 
 [dependency-groups]
@@ -102,7 +103,16 @@ disallow_untyped_defs = true
 no_implicit_optional = true
 
 [[tool.mypy.overrides]]
-module = ["hydra.*", "omegaconf.*", "opentelemetry.*", "pythonjsonlogger.*", "structlog.*"]
+module = [
+  "hydra.*",
+  "omegaconf.*",
+  "opentelemetry.*",
+  "pandas.*",
+  "pythonjsonlogger.*",
+  "sklearn.*",
+  "structlog.*",
+  "ydata_profiling.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

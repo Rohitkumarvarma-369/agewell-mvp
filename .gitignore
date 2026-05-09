@@ -8,7 +8,14 @@
 .coverage
 htmlcov/
 outputs/
-data/
+data/*
+!data/.gitignore
+!data/*.dvc
+!data/quality_report.json
+!data/splits/
+data/splits/*
+!data/splits/.gitignore
+!data/splits/*.dvc
 models/
 mlruns/
 __pycache__/
