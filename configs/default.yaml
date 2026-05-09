@@ -1,0 +1,14 @@
+defaults:
+  - _self_
+  - data: kaggle_only
+  - model: default
+  - training: default
+  - pipeline: default
+  - agent: default
+  - rl: default
+
+run_name: ${oc.env:USER,agewell}-${now:%Y%m%d-%H%M%S}
+seed: 1337
+output_root: outputs/
+mlflow:
+  tracking_uri: ${oc.env:MLFLOW_TRACKING_URI,http://localhost:5000}

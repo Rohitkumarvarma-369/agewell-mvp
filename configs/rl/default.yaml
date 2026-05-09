@@ -1,0 +1,6 @@
+enabled: false
+env_id: agewell-research-env
+task_corpus: tasks/rl_corpus.jsonl
+rollouts:
+  n: 100
+  seed: 1337

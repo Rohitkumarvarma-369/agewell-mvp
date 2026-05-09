@@ -1,0 +1,7 @@
+run_name: phase0_stub
+subset: all
+batch_size: 32
+total_epochs: 1
+precision: bf16-mixed
+mlflow:
+  experiment: agewell-foundation

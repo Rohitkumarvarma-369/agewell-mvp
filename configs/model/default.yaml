@@ -1,0 +1,29 @@
+encoders:
+  clinical_demo: {type: tabpfn_frozen, n_features: 7, ctx_size: 1500}
+  clinical_lifestyle: {type: tabpfn_frozen, n_features: 5, ctx_size: 1000}
+  clinical_comorbid: {type: tabpfn_frozen, n_features: 8, ctx_size: 1500}
+  cognitive: {type: tabpfn_frozen, n_features: 18, ctx_size: 1500}
+  blood: {type: tabpfn_frozen, n_features: 7, ctx_size: 1500}
+  mri_vol: {type: tabpfn_frozen, n_features: 340, ctx_size: 1500}
+  mri_raw: {type: brainiac_cached, in_dim: 768}
+  genetic: {type: apoe_embedding}
+  lipid: {type: lipid_mlp, n_features: 213, hidden: 256, dropout: 0.1}
+
+transformer:
+  n_layers: 4
+  n_heads: 8
+  d: 256
+  dropout: 0.1
+
+moe:
+  n_experts: 8
+  top_k: 2
+  load_balance_alpha: 1.0e-2
+
+heads:
+  n_classes: 5
+  n_surv_bins: 4
+
+fallback:
+  mri_raw: dinov2_3d_slice
+  tabular: catboost

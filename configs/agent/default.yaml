@@ -1,0 +1,7 @@
+enabled: false
+runtime_url: http://localhost:7777
+model:
+  provider: anthropic
+  id: claude-sonnet-4-5
+memory:
+  db_url: postgresql+psycopg://agewell:agewell@localhost:5532/agentos

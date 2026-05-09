@@ -1,0 +1,5 @@
+services:
+  inference:
+    environment:
+      AGEWELL_ENV: cloud
+      MLFLOW_TRACKING_URI: http://mlflow:5000

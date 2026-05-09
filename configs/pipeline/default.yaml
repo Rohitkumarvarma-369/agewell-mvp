@@ -1,0 +1,9 @@
+services:
+  inference: http://localhost:8000
+  mlflow: http://localhost:5000
+  prefect: http://localhost:4200
+  minio: http://localhost:9000
+  postgres: localhost:5532
+
+prefect:
+  api: http://localhost:4200
