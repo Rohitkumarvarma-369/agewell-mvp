@@ -1,6 +1,7 @@
 """Integration checks for the Phase 0 backing services."""
 
 import httpx
+import psycopg
 import pytest
 
 ENDPOINTS = {
@@ -25,3 +26,22 @@ def test_postgres_alive(pg_conn) -> None:  # type: ignore[no-untyped-def]
     with pg_conn.cursor() as cursor:
         cursor.execute("SELECT 1")
         assert cursor.fetchone() == (1,)
+
+
+def _assert_pgvector_loaded(conn: psycopg.Connection[tuple], database: str) -> None:
+    """Assert that the vector extension is installed in a database."""
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT extname FROM pg_extension WHERE extname = 'vector'")
+        assert cursor.fetchone() is not None, f"pgvector extension missing in {database} DB"
+
+
+@pytest.mark.integration
+def test_pgvector_extension_loaded(pg_conn: psycopg.Connection[tuple]) -> None:
+    """Pgvector is installed in the agewell database."""
+    _assert_pgvector_loaded(pg_conn, "agewell")
+
+
+@pytest.mark.integration
+def test_agentos_pgvector_extension_loaded(agentos_pg_conn: psycopg.Connection[tuple]) -> None:
+    """Pgvector is installed in the agentos database."""
+    _assert_pgvector_loaded(agentos_pg_conn, "agentos")

@@ -3,9 +3,10 @@
         agent serve dashboard
 
 SHELL := /bin/bash
+INCLUDE_MVP ?= 0
 
 bootstrap:
-	@./scripts/bootstrap.sh
+	@INCLUDE_MVP=$(INCLUDE_MVP) ./scripts/bootstrap.sh
 
 up:
 	docker compose up -d --build

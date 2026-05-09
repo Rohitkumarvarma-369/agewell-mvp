@@ -36,6 +36,9 @@ make test
 ## Common Fixes
 
 - If `uv sync` cannot find Python 3.11, run `uv python install 3.11`.
+- Before starting Phase 1, run `uv sync --group dev --extra mvp` or
+  `make bootstrap INCLUDE_MVP=1` to install the full ML/agent toolchain. The
+  Phase 0 default install is intentionally minimal.
 - If a port is already taken, change the host-side port in `docker-compose.yml`.
 - If MinIO buckets are missing, run `./scripts/seed_minio.sh`.
 - If Postgres init did not run, remove the Compose volume with `docker compose down -v`

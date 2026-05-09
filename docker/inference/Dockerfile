@@ -11,6 +11,7 @@ RUN pip install --no-cache-dir \
     hydra-core==1.3.2 \
     omegaconf==2.3.0 \
     opentelemetry-api==1.27.0 \
+    opentelemetry-instrumentation-fastapi==0.48b0 \
     opentelemetry-sdk==1.27.0 \
     pydantic==2.10.3 \
     pydantic-settings==2.7.0 \
