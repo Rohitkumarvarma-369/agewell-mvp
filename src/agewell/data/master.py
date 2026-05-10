@@ -41,7 +41,7 @@ def build_master_dataframe(
         emitted = list(adapter.iter_records())
         records.extend(emitted)
         adapter_counts[name] = len(emitted)
-        skipped[name] = adapter.skipped_counts
+        skipped[name] = _explicit_skipped_counts(name, adapter.skipped_counts)
 
     raw_df = canonical_records_to_dataframe(records)
     merged_df, merge_stats = merge_adni_nifti(raw_df)
@@ -177,6 +177,14 @@ def update_quality_report_splits(data_cfg: DictConfig, split_ratios: dict[str, A
     report = json.loads(report_path.read_text(encoding="utf-8"))
     report["split_ratios"] = split_ratios
     report_path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _explicit_skipped_counts(adapter_name: str, skipped_counts: dict[str, int]) -> dict[str, int]:
+    """Return skip counts with known zero-count reasons made explicit."""
+    out = dict(skipped_counts)
+    if adapter_name in {"brsdincer", "oasis_cross", "oasis_long"}:
+        out.setdefault("blank_cdr", 0)
+    return out
 
 
 def _repo_path(path: str) -> Path:

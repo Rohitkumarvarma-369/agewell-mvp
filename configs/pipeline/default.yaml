@@ -5,5 +5,14 @@ services:
   minio: http://localhost:9000
   postgres: localhost:5532
 
+imaging:
+  strategy: synthstrip_brainiac_only
+  run_fastsurfer: false
+  nifti_count: 2436
+  reason: >
+    Phase 1 already provides 328 FreeSurfer-derived mri_vol columns for the
+    ADNI rich subset; Phase 2 should cache SynthStrip masks and BrainIAC
+    embeddings for all ADNI/IXI NIfTIs and skip FastSurfer.
+
 prefect:
   api: http://localhost:4200

@@ -73,13 +73,17 @@
   "skipped_counts": {
     "adni_nifti": {},
     "adni_tabular": {},
-    "brsdincer": {},
+    "brsdincer": {
+      "blank_cdr": 0
+    },
     "ixi": {},
     "lipidomics": {},
     "oasis_cross": {
       "blank_cdr": 201
     },
-    "oasis_long": {},
+    "oasis_long": {
+      "blank_cdr": 0
+    },
     "rabieelkharoua": {}
   },
   "split_ratios": {

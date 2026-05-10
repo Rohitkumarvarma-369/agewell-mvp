@@ -8,6 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from agewell.config import load_cfg, repo_root
+from agewell.data.freesurfer_columns import canonical_freesurfer_columns
 
 
 def main() -> None:
@@ -33,6 +34,16 @@ def main() -> None:
     assert sum(1 for count in report["modality_pattern_counts"].values() if count >= 100) >= 5
     assert profile_path.exists()
     assert report_path.exists()
+    assert report["skipped_counts"]["brsdincer"]["blank_cdr"] == 0
+    assert report["skipped_counts"]["oasis_cross"]["blank_cdr"] == 201
+    assert report["skipped_counts"]["oasis_long"]["blank_cdr"] == 0
+
+    canonical_mri_vol_columns = canonical_freesurfer_columns()
+    observed_mri_vol_columns = tuple(
+        sorted(column for column in df if column.startswith("mri_vol__"))
+    )
+    assert observed_mri_vol_columns == canonical_mri_vol_columns
+    assert int(cfg.model.encoders.mri_vol.n_features) == len(canonical_mri_vol_columns)
 
     split_subjects = {
         "train": set(train["subject_id"]),

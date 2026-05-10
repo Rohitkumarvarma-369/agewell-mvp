@@ -28,6 +28,9 @@ class ADNITabularAdapter(BaseAdapter):
     def _row_to_record(self, row: pd.Series) -> CanonicalRecord:
         diagnosis, confidence, source = canonicalize_diagnosis(row["Diagnosis"], self.cohort)
         apoe4 = as_int(row.get("High_risk_ApoE4"))
+        qc_reasons = []
+        if apoe4 is not None:
+            qc_reasons.append("apoe_binary_collapsed")
         return CanonicalRecord(
             subject_id=f"ADNI:{int(row['RID']):04d}",
             visit_idx=0,
@@ -58,6 +61,7 @@ class ADNITabularAdapter(BaseAdapter):
             diagnosis_source=source,
             diagnosis_confidence=confidence,
             qc_status="pass",
+            qc_reasons=qc_reasons,
         )
 
 

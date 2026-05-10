@@ -58,3 +58,17 @@ def test_oasis_cross_skips_blank_cdr_rows() -> None:
     records = list(adapter.iter_records())
     assert len(records) == 235
     assert adapter.skipped_counts["blank_cdr"] == 201
+
+
+def test_adni_tabular_marks_binary_apoe_qc_reason() -> None:
+    """ADNI exposes APOE as binary high-risk status, not allele count."""
+    pytest.importorskip("pandas")
+    from agewell.data.registry import ADAPTERS
+
+    source_root = KAGGLE_ROOT / SUBDIRS["adni_tabular"]
+    if not source_root.exists():
+        pytest.skip(f"missing local dataset: {source_root}")
+    adapter = ADAPTERS["adni_tabular"](source_root)
+    apoe_records = [record for record in adapter.iter_records() if record.apoe4 is not None]
+    assert apoe_records
+    assert all("apoe_binary_collapsed" in record.qc_reasons for record in apoe_records)

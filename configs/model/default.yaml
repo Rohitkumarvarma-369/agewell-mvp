@@ -4,7 +4,7 @@ encoders:
   clinical_comorbid: {type: tabpfn_frozen, n_features: 8, ctx_size: 1500}
   cognitive: {type: tabpfn_frozen, n_features: 18, ctx_size: 1500}
   blood: {type: tabpfn_frozen, n_features: 7, ctx_size: 1500}
-  mri_vol: {type: tabpfn_frozen, n_features: 340, ctx_size: 1500}
+  mri_vol: {type: tabpfn_frozen, n_features: 328, ctx_size: 1500}
   mri_raw: {type: brainiac_cached, in_dim: 768}
   genetic: {type: apoe_embedding}
   lipid: {type: lipid_mlp, n_features: 213, hidden: 256, dropout: 0.1}
