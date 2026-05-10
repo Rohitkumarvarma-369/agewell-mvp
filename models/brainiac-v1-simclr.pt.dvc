@@ -1,0 +1,5 @@
+outs:
+- md5: 61eb5776dff6b61880a5da491e6a16a1
+  size: 362119240
+  hash: md5
+  path: brainiac-v1-simclr.pt

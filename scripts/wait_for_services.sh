@@ -22,6 +22,11 @@ check_one() {
     mlflow) check_http mlflow "http://localhost:5000/health" ;;
     prefect) check_http prefect "http://localhost:4200/api/health" ;;
     inference) check_http inference "http://localhost:8000/health" ;;
+    dcm2niix) check_http dcm2niix "http://localhost:8001/health" ;;
+    bids-validator) check_http bids-validator "http://localhost:8002/health" ;;
+    brainiac-preprocess) check_http brainiac-preprocess "http://localhost:8003/health" ;;
+    brainiac) check_http brainiac "http://localhost:8005/health" ;;
+    qc) check_http qc "http://localhost:8006/health" ;;
     redis) docker compose exec -T redis redis-cli ping | grep -q PONG ;;
     *) echo "unknown service: $svc" >&2; return 2 ;;
   esac
@@ -30,6 +35,7 @@ check_one() {
 service_list() {
   case "$TARGET" in
     all) echo "postgres minio mlflow prefect inference redis" ;;
+    imaging) echo "dcm2niix bids-validator brainiac-preprocess brainiac qc" ;;
     *) echo "$TARGET" ;;
   esac
 }

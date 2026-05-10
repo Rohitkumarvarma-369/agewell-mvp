@@ -1,0 +1,5 @@
+outs:
+- md5: 42cfeb6476c7765a95109a213a7e601b
+  size: 17350930
+  hash: md5
+  path: nihpd_asym_13.0-18.5_t1w.nii

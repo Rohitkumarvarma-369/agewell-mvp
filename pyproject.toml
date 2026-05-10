@@ -45,7 +45,9 @@ mvp = [
   "pyarrow>=17",
   "redis>=5.0",
   "scikit-learn>=1.5",
+  "scikit-image>=0.21",
   "scipy>=1.13",
+  "SimpleITK>=2.4",
   "sqlalchemy>=2.0",
   "streamlit>=1.38",
   # Target TabPFN >=2.5,<3 when it is published on the package index.
@@ -86,6 +88,7 @@ packages = ["src/agewell"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+extend-exclude = ["src/agewell/vendor/HD_BET"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "D"]
@@ -97,6 +100,7 @@ convention = "google"
 [tool.mypy]
 python_version = "3.11"
 packages = ["agewell"]
+exclude = ["src/agewell/vendor/HD_BET"]
 warn_unused_ignores = true
 warn_redundant_casts = true
 disallow_untyped_defs = true
@@ -105,10 +109,14 @@ no_implicit_optional = true
 [[tool.mypy.overrides]]
 module = [
   "hydra.*",
+  "monai.*",
+  "nibabel.*",
   "omegaconf.*",
   "opentelemetry.*",
   "pandas.*",
+  "prefect.*",
   "pythonjsonlogger.*",
+  "SimpleITK.*",
   "sklearn.*",
   "structlog.*",
   "ydata_profiling.*",

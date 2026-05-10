@@ -1,5 +1,6 @@
-.PHONY: bootstrap up down logs health test test-unit test-integration lint format clean \
+.PHONY: bootstrap up down logs health phase2-up phase2-health test test-unit test-integration lint format clean \
         build_master split eda data-gates dvc-init dvc-pin phase1 \
+        phase2-smoke phase2-dvc-pin \
         train_teacher train_student calibrate evaluate demo baseline \
         agent serve dashboard
 
@@ -23,6 +24,15 @@ logs:
 
 health:
 	@./scripts/wait_for_services.sh all --once
+
+phase2-up:
+	docker compose --profile imaging up -d --build
+	@./scripts/wait_for_services.sh all
+	@./scripts/wait_for_services.sh imaging
+
+phase2-health:
+	@./scripts/wait_for_services.sh all --once
+	@./scripts/wait_for_services.sh imaging --once
 
 test:
 	uv run pytest
@@ -64,6 +74,15 @@ dvc-pin: dvc-init
 	uv run dvc add data/master.parquet data/splits/train.parquet data/splits/calib.parquet data/splits/test.parquet
 
 phase1: build_master split eda data-gates dvc-pin
+
+phase2-smoke:
+	uv run python -m agewell.scripts.run_imaging --cohort ADNI_NIFTI --limit 1
+
+phase2-dvc-pin: dvc-init
+	uv run dvc add models/brainiac-v1-simclr.pt models/brainiac/atlases/nihpd_asym_13.0-18.5_t1w.nii models/brainiac/hdbet/0.model
+	uv run dvc add data/master.parquet
+	@test ! -d data/derivatives/brainiac || uv run dvc add data/derivatives/brainiac
+	@test ! -d data/derivatives/brainiac_preprocess || uv run dvc add data/derivatives/brainiac_preprocess
 
 train_teacher:
 	uv run python -m agewell.scripts.train_teacher

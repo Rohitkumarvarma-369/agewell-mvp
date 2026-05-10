@@ -4,15 +4,39 @@ services:
   prefect: http://localhost:4200
   minio: http://localhost:9000
   postgres: localhost:5532
+  dcm2niix: http://localhost:8001
+  bids_validator: http://localhost:8002
+  brainiac_preprocess: http://localhost:8003
+  brainiac: http://localhost:8005
+  qc: http://localhost:8006
 
 imaging:
-  strategy: synthstrip_brainiac_only
+  strategy: brainiac_hdbet_cls_only
   run_fastsurfer: false
+  run_synthstrip: false
   nifti_count: 2436
+  preprocess_versions:
+    adni_nifti: preprocessed_v1_passthrough
+    ixi: hdbet_v1_ixi_mni
+    raw: hdbet_v1_n4_nihpd
+  concurrency:
+    brainiac_preprocess: 16
+    brainiac: 1
+  derivatives:
+    preprocess_dir: data/derivatives/brainiac_preprocess
+    brainiac_npy_dir: data/derivatives/brainiac
+  qc:
+    mask_min_voxels: 100000
+    brain_volume_ml_min: 800
+    brain_volume_ml_max: 1900
+    registration_mi_min: 0.5
+    embedding_norm_min: 50
+    embedding_norm_max: 500
   reason: >
     Phase 1 already provides 328 FreeSurfer-derived mri_vol columns for the
-    ADNI rich subset; Phase 2 should cache SynthStrip masks and BrainIAC
-    embeddings for all ADNI/IXI NIfTIs and skip FastSurfer.
+    ADNI rich subset; Phase 2 should cache BrainIAC CLS embeddings for all
+    ADNI/IXI NIfTIs, skip FastSurfer, and use BrainIAC-compatible
+    preprocessing branches.
 
 prefect:
   api: http://localhost:4200

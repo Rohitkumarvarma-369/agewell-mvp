@@ -86,6 +86,68 @@ services:
       timeout: 3s
       retries: 20
 
+  dcm2niix-svc:
+    profiles: ["imaging"]
+    build:
+      context: .
+      dockerfile: docker/dcm2niix/Dockerfile
+    volumes:
+      - ./data:/data
+    ports:
+      - "8001:8000"
+
+  bids-validator-svc:
+    profiles: ["imaging"]
+    build:
+      context: .
+      dockerfile: docker/bids_validator/Dockerfile
+    volumes:
+      - ./data:/data
+    ports:
+      - "8002:8000"
+
+  brainiac-preprocess-svc:
+    profiles: ["imaging"]
+    build:
+      context: .
+      dockerfile: docker/brainiac_preprocess/Dockerfile
+    environment:
+      HDBET_PARAMS_DIR: /models/brainiac/hdbet
+    volumes:
+      - ./data:/data
+      - ./models/brainiac:/models/brainiac:ro
+    ports:
+      - "8003:8000"
+    deploy:
+      resources:
+        reservations:
+          devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]
+
+  brainiac-svc:
+    profiles: ["imaging"]
+    build:
+      context: .
+      dockerfile: docker/brainiac/Dockerfile
+    volumes:
+      - ./data:/data
+      - ./models:/app/models:ro
+    ports:
+      - "8005:8000"
+    deploy:
+      resources:
+        reservations:
+          devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]
+
+  qc-svc:
+    profiles: ["imaging"]
+    build:
+      context: .
+      dockerfile: docker/qc/Dockerfile
+    volumes:
+      - ./data:/data
+    ports:
+      - "8006:8000"
+
 volumes:
   pgdata: {}
   miniodata: {}
