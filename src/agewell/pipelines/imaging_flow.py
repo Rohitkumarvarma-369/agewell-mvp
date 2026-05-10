@@ -130,12 +130,7 @@ def imaging_flow(
     pre = step_preprocess(subject_id, visit_idx, cohort, nifti_uri, str(urls.brainiac_preprocess))
     brain = step_brainiac(subject_id, visit_idx, nifti_uri, pre, str(urls.brainiac))
     qc = step_qc(cohort, pre, brain, str(urls.qc))
-    updates = {
-        "mri_stripped_uri": pre["preprocessed_uri"],
-        "mri_brainiac_uri": brain["features_uri"],
-        "qc_status": qc["qc_status"],
-        "qc_reasons": qc["qc_reasons"],
-    }
+    updates = build_imaging_updates(pre, brain, qc)
     upsert_imaging_uris(
         master_path=master_path or default_master_path(),
         subject_id=subject_id,
@@ -144,3 +139,18 @@ def imaging_flow(
     )
     log.info("imaging_flow done: %s/%s", subject_id, visit_idx)
     return {"preprocess": pre, "brainiac": brain, "qc": qc}
+
+
+def build_imaging_updates(
+    preprocess: dict[str, Any],
+    brainiac: dict[str, Any],
+    qc: dict[str, Any],
+) -> dict[str, Any]:
+    """Build master.parquet updates, quarantining QC-failed BrainIAC features."""
+    qc_status = str(qc["qc_status"])
+    return {
+        "mri_stripped_uri": preprocess["preprocessed_uri"],
+        "mri_brainiac_uri": None if qc_status == "fail" else brainiac["features_uri"],
+        "qc_status": qc_status,
+        "qc_reasons": qc["qc_reasons"],
+    }

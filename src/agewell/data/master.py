@@ -211,6 +211,8 @@ def _iter_counts(counts: pd.Series) -> list[tuple[tuple[Any, ...], int]]:
 def _sorted_list(value: object) -> list[str]:
     if value is None or (isinstance(value, float) and pd.isna(value)):
         return []
+    if hasattr(value, "tolist") and not isinstance(value, str | bytes):
+        value = value.tolist()
     if isinstance(value, list):
         return sorted(str(item) for item in value if not _is_missing(item))
     if isinstance(value, tuple | set):

@@ -35,7 +35,11 @@ def upsert_imaging_uris(
         else:
             df.at[idx, column] = value
     modalities = set(_sorted_list(df.at[idx, "available_modalities"]))
-    modalities.add("mri_raw")
+    if "mri_brainiac_uri" in updates:
+        if updates["mri_brainiac_uri"] is None:
+            modalities.discard("mri_raw")
+        else:
+            modalities.add("mri_raw")
     df.at[idx, "available_modalities"] = sorted(modalities)
     df.at[idx, "record_version"] = _record_version(df.loc[idx])
     df.to_parquet(path, index=False)

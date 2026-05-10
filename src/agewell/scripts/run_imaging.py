@@ -29,6 +29,25 @@ def main() -> None:
 
     progress_path = _repo_path(args.progress_path)
     progress_path.parent.mkdir(parents=True, exist_ok=True)
+    summary = _run_rows(
+        todo,
+        master_path=master_path,
+        progress_path=progress_path,
+        dry_run=bool(args.dry_run),
+        fail_fast=bool(args.fail_fast),
+    )
+    print(json.dumps(summary, sort_keys=True))
+
+
+def _run_rows(
+    todo: pd.DataFrame,
+    *,
+    master_path: Path,
+    progress_path: Path,
+    dry_run: bool,
+    fail_fast: bool,
+) -> dict[str, int]:
+    summary = {"queued": len(todo), "dry_run": 0, "done": 0, "failed": 0}
     for _, row in todo.iterrows():
         payload = {
             "ts": datetime.now(UTC).isoformat(),
@@ -36,10 +55,11 @@ def main() -> None:
             "visit_idx": int(row["visit_idx"]),
             "cohort": row["cohort"],
             "mri_t1_uri": row["mri_t1_uri"],
-            "status": "dry_run" if args.dry_run else "started",
+            "status": "dry_run" if dry_run else "started",
         }
         _append_jsonl(progress_path, payload)
-        if args.dry_run:
+        if dry_run:
+            summary["dry_run"] += 1
             continue
         try:
             out = imaging_flow(
@@ -50,12 +70,21 @@ def main() -> None:
                 master_path=master_path,
             )
             _append_jsonl(progress_path, payload | {"status": "done", "output": out})
+            summary["done"] += 1
         except Exception as exc:
             _append_jsonl(
                 progress_path,
                 payload | {"status": "failed", "error": type(exc).__name__, "message": str(exc)},
             )
-            raise
+            summary["failed"] += 1
+            if fail_fast:
+                raise
+            continue
+    _append_jsonl(
+        progress_path,
+        {"ts": datetime.now(UTC).isoformat(), "status": "summary", "summary": summary},
+    )
+    return summary
 
 
 def _parse_args() -> argparse.Namespace:
@@ -64,6 +93,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--master-path", default="data/master.parquet")
     parser.add_argument("--progress-path", default="logs/imaging_progress.jsonl")
     return parser.parse_args()
