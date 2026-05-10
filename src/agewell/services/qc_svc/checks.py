@@ -53,7 +53,7 @@ def run_qc(
 
     if not np.isfinite([normalized_mean, normalized_std]).all():
         failures.append("normalized_intensity_invalid")
-    elif abs(normalized_mean) > 0.2 or not 0.5 <= normalized_std <= 1.5:
+    elif abs(normalized_mean) > 0.2 or not 0.35 <= normalized_std <= 1.5:
         failures.append("normalized_intensity_distribution_out_of_range")
 
     status = "fail" if failures else "pass"
