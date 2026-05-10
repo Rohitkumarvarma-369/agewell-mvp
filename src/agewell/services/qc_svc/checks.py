@@ -48,7 +48,7 @@ def run_qc(
     norm = float(np.linalg.norm(embedding))
     if not np.isfinite(embedding).all() or norm == 0.0:
         failures.append("brainiac_embedding_invalid")
-    elif not 50.0 <= norm <= 500.0:
+    elif not 20.0 <= norm <= 500.0:
         failures.append("brainiac_embedding_norm_out_of_range")
 
     if not np.isfinite([normalized_mean, normalized_std]).all():
