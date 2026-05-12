@@ -50,10 +50,7 @@ mvp = [
   "SimpleITK>=2.4",
   "sqlalchemy>=2.0",
   "streamlit>=1.38",
-  # Target TabPFN >=2.5,<3 when it is published on the package index.
-  # The current resolvable 2.x fallback is 2.2.1; avoid accidentally
-  # resolving TabPFN 7.x against the Phase 3 encoder assumptions.
-  "tabpfn>=2.0,<2.5",
+  "tabpfn>=7.1,<8",
   "tenacity>=8.5",
   "timm>=1.0",
   "torch>=2.4",
@@ -119,6 +116,7 @@ module = [
   "SimpleITK.*",
   "sklearn.*",
   "structlog.*",
+  "tabpfn.*",
   "ydata_profiling.*",
 ]
 ignore_missing_imports = true

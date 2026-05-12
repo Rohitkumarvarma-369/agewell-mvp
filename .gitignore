@@ -8,6 +8,8 @@
 .coverage
 htmlcov/
 outputs/
+data.pre_import_*/
+local_data_backup_*/
 data/*
 !data/.gitignore
 !data/*.dvc

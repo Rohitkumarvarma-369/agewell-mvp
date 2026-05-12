@@ -68,6 +68,7 @@
     "clinical_demo+cognitive+mri_vol": 981,
     "clinical_demo+mri_raw": 579
   },
+  "mri_brainiac_uri_count": 2436,
   "mri_t1_uri_count": 2436,
   "row_count": 5987,
   "skipped_counts": {

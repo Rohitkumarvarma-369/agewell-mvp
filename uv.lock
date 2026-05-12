@@ -119,7 +119,7 @@ requires-dist = [
     { name = "sqlalchemy", marker = "extra == 'mvp'", specifier = ">=2.0" },
     { name = "streamlit", marker = "extra == 'mvp'", specifier = ">=1.38" },
     { name = "structlog", specifier = ">=24.1" },
-    { name = "tabpfn", marker = "extra == 'mvp'", specifier = ">=2.0,<2.5" },
+    { name = "tabpfn", marker = "extra == 'mvp'", specifier = ">=7.1,<8" },
     { name = "tenacity", marker = "extra == 'mvp'", specifier = ">=8.5" },
     { name = "timm", marker = "extra == 'mvp'", specifier = ">=1.0" },
     { name = "torch", marker = "extra == 'mvp'", specifier = ">=2.4" },
@@ -4864,13 +4864,15 @@ wheels = [
 
 [[package]]
 name = "tabpfn"
-version = "2.2.1"
+version = "7.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "einops" },
     { name = "eval-type-backport" },
+    { name = "filelock" },
     { name = "huggingface-hub" },
     { name = "joblib" },
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -4880,9 +4882,9 @@ dependencies = [
     { name = "torch" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/8b/ab7e3c71fc5fb6be61295ca1fb880b09df567257e9e4228d77cd79a4e1ec/tabpfn-2.2.1.tar.gz", hash = "sha256:706c03c3d3dc478118561761c29fa95727b6e239671922c4c40a8e4b3cc28fbf", size = 200487, upload_time = "2025-09-17T10:42:15.649Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/4d/5b46d82f0329f5874562af18466e8e64b01405ade42a441642591a4f8622/tabpfn-7.1.1.tar.gz", hash = "sha256:9174529f57754d9a71774f7ee376b95c72ddb455df21e54bc1fddb7dac019f8b", size = 678411, upload_time = "2026-04-09T12:05:55.317Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/e9/085c60d5e447083ac6705b7b8bfac90773eb4191c00ddc70607f4d8b339b/tabpfn-2.2.1-py3-none-any.whl", hash = "sha256:9aa3a0df8ecebcae5f426b1fec9bb2e2a690880bc8ad079191e8d959bf0f157b", size = 173723, upload_time = "2025-09-17T10:42:14.435Z" },
+    { url = "https://files.pythonhosted.org/packages/1f/13/3f7fbe98e6ff733cc1a5bdb62a72130cee9b9a57e4438c8f008249c1fe01/tabpfn-7.1.1-py3-none-any.whl", hash = "sha256:7482516cc9be151e849353bb1e1d65a0fdcefa0a41e3c9e635f34da0c7a8a5bd", size = 660580, upload_time = "2026-04-09T12:05:53.611Z" },
 ]
 
 [[package]]
