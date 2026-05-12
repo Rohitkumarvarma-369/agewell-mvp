@@ -78,6 +78,56 @@ def test_tabpfn_encoder_uses_backend_and_averages_estimators() -> None:
     assert torch.isfinite(out).all()
 
 
+def test_tabpfn_encoder_accepts_batch_first_estimator_embeddings() -> None:
+    def backend(x: np.ndarray) -> np.ndarray:
+        assert x.shape == (1, 5)
+        low = np.ones((1, 3), dtype=np.float32)
+        high = np.full((1, 3), 5.0, dtype=np.float32)
+        return np.stack([low, high], axis=1)
+
+    encoder = TabPFNFrozenEncoder(
+        modality="clinical_demo",
+        n_features=5,
+        ctx_X=torch.zeros(4, 5),
+        ctx_y=torch.tensor([0, 1, 0, 1]),
+        embedding_dim=3,
+        out_dim=7,
+        embedding_backend=backend,
+    )
+
+    out = encoder({"clinical_demo_features": torch.zeros(1, 5)})
+
+    assert out.shape == (1, 7)
+    assert torch.isfinite(out).all()
+
+
+def test_tabpfn_encoder_accepts_single_sample_squeezed_estimators() -> None:
+    def backend(x: np.ndarray) -> np.ndarray:
+        assert x.shape == (1, 5)
+        return np.stack(
+            [
+                np.ones(3, dtype=np.float32),
+                np.full(3, 5.0, dtype=np.float32),
+            ],
+            axis=0,
+        )
+
+    encoder = TabPFNFrozenEncoder(
+        modality="clinical_demo",
+        n_features=5,
+        ctx_X=torch.zeros(4, 5),
+        ctx_y=torch.tensor([0, 1, 0, 1]),
+        embedding_dim=3,
+        out_dim=7,
+        embedding_backend=backend,
+    )
+
+    out = encoder({"clinical_demo_features": torch.zeros(1, 5)})
+
+    assert out.shape == (1, 7)
+    assert torch.isfinite(out).all()
+
+
 def test_tabpfn_encoder_validates_embedding_dim() -> None:
     encoder = TabPFNFrozenEncoder(
         modality="clinical_demo",

@@ -1,7 +1,35 @@
-run_name: phase0_stub
+run_name: phase4_full_local
 subset: all
 batch_size: 32
+num_workers: 0
+pin_memory: false
 total_epochs: 1
+total_steps: 1000
+lr: 3.0e-4
+wd: 1.0e-4
+gradient_clip_val: 1.0
 precision: bf16-mixed
+strict_mri_paths: true
+distill_temperature: 2.0
+
+loss_weights:
+  diag: 1.0
+  surv: 1.0
+  mmse: 0.2
+  cdr: 0.5
+  recon: 0.1
+  distill_logits: 0.0
+  distill_embedding: 0.0
+  load_balance: 0.01
+
+modality_dropout:
+  max_p: 0.35
+  warmup_steps: 100
+
+trainer:
+  accelerator: auto
+  devices: auto
+  log_every_n_steps: 10
+
 mlflow:
   experiment: agewell-foundation

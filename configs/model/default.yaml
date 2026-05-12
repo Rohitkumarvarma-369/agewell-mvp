@@ -18,11 +18,15 @@ transformer:
 moe:
   n_experts: 8
   top_k: 2
+  expert_ff_mult: 4
   load_balance_alpha: 1.0e-2
 
 heads:
   n_classes: 5
   n_surv_bins: 4
+  recon_hidden: 256
+
+max_trainable_params: 25000000
 
 fallback:
   mri_raw: dinov2_3d_slice

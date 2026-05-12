@@ -65,14 +65,36 @@ class TabPFNFrozenEncoder(BaseEncoder):
             raw = self._get_or_fit_model().get_embeddings(x_np, data_source="test")
         arr = np.asarray(raw, dtype=np.float32)
         if arr.ndim == 3:
-            arr = arr.mean(axis=0)
+            arr = self._average_estimators(arr, batch_size=x_np.shape[0])
         if arr.ndim != 2:
             raise ValueError(f"TabPFN embeddings must be 2D or 3D; got shape {arr.shape}")
+        if x_np.shape[0] == 1 and arr.shape[0] != 1 and arr.shape[1] == self.embedding_dim:
+            arr = arr.mean(axis=0, keepdims=True)
+        if arr.shape[0] != x_np.shape[0]:
+            raise ValueError(
+                f"TabPFN embedding batch mismatch: expected {x_np.shape[0]}, got {arr.shape[0]}"
+            )
         if arr.shape[1] != self.embedding_dim:
             raise ValueError(
                 f"TabPFN embedding dim mismatch: expected {self.embedding_dim}, got {arr.shape[1]}"
             )
         return torch.from_numpy(arr)
+
+    def _average_estimators(self, arr: np.ndarray, *, batch_size: int) -> np.ndarray:
+        """Average estimator embeddings across known TabPFN 3D layouts."""
+        if arr.shape[-1] != self.embedding_dim:
+            raise ValueError(
+                "TabPFN embedding dim mismatch: "
+                f"expected {self.embedding_dim}, got shape {arr.shape}"
+            )
+        if arr.shape[0] == batch_size:
+            return arr.mean(axis=1)
+        if arr.shape[1] == batch_size:
+            return arr.mean(axis=0)
+        raise ValueError(
+            "TabPFN 3D embeddings must include the batch axis in dimension 0 or 1; "
+            f"got shape {arr.shape} for batch size {batch_size}"
+        )
 
     def _get_or_fit_model(self) -> Any:
         if self._tabpfn_model is not None:
