@@ -1,0 +1,35 @@
+run_name: phase5_student_full
+subset: all
+batch_size: 8
+num_workers: 0
+pin_memory: true
+total_epochs: 20
+total_steps: 1
+lr: 3.0e-4
+wd: 1.0e-4
+gradient_clip_val: 1.0
+precision: bf16-mixed
+strict_mri_paths: true
+distill_temperature: 2.0
+
+loss_weights:
+  diag: 1.0
+  surv: 1.0
+  mmse: 0.2
+  cdr: 0.5
+  recon: 0.1
+  distill_logits: 0.5
+  distill_embedding: 0.1
+  load_balance: 0.01
+
+modality_dropout:
+  max_p: 0.35
+  warmup_steps: 250
+
+trainer:
+  accelerator: gpu
+  devices: 1
+  log_every_n_steps: 10
+
+mlflow:
+  experiment: agewell-foundation

@@ -44,13 +44,17 @@ If `zstd` is unavailable, the script falls back to `.tar.gz`.
 ```bash
 git clone https://github.com/Rohitkumarvarma-369/agewell-mvp
 cd agewell-mvp
-./scripts/setup_fresh_machine.sh --artifact /path/to/agewell-runtime-<git_sha>-<timestamp>.tar.zst
+./scripts/setup_fresh_machine.sh \
+  --artifact /path/to/agewell-runtime-<git_sha>-<timestamp>.tar.zst \
+  --torch-cuda auto
 ./scripts/verify_runtime.sh --real-tabpfn
 ```
 
 The setup script installs basic apt packages when available, installs `uv` when
 missing, provisions Python 3.11, syncs `uv.lock` with `--extra mvp --frozen`, and
-hydrates the runtime archive.
+hydrates the runtime archive. `--torch-cuda auto` keeps CPU machines unchanged
+and repairs CUDA 12.x cloud machines to the known working cu124 Torch wheel set
+when the locked Torch wheel cannot initialize CUDA.
 
 ## Why Hydration Rebases Paths
 

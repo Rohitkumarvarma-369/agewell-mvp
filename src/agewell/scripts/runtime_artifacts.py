@@ -205,8 +205,7 @@ def _compare_data_stats(root: Path, manifest: dict[str, Any], failures: list[str
     for key in ("master_rows", "mri_rows", "brainiac_non_null", "brainiac_existing"):
         if expected.get(key) != actual.get(key):
             failures.append(
-                f"data stat mismatch {key}: "
-                f"manifest={expected.get(key)} actual={actual.get(key)}"
+                f"data stat mismatch {key}: manifest={expected.get(key)} actual={actual.get(key)}"
             )
     expected_splits = expected.get("split_rows", {})
     actual_splits = actual.get("split_rows", {})

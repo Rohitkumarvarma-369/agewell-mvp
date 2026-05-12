@@ -9,6 +9,7 @@ import lightning as L
 import pandas as pd
 import torch
 from torch import Tensor, nn
+from torchmetrics.classification import MulticlassF1Score
 
 from agewell.ml.config_utils import cfg_mapping, cfg_select
 from agewell.ml.encoders._base import BaseEncoder
@@ -48,6 +49,7 @@ class AgeWellINLightning(L.LightningModule):
             },
         )
         self.teacher = teacher
+        self.val_diag_macro_f1 = MulticlassF1Score(num_classes=5, average="macro")
         self.model = model or AgeWellINModel(
             model_cfg=cfg_select(cfg, "model", cfg),
             context_df=context_df,
@@ -94,8 +96,14 @@ class AgeWellINLightning(L.LightningModule):
             distill_temperature=float(cfg_select(self.cfg, "training.distill_temperature", 2.0)),
         )
         self.log("val/loss", loss, prog_bar=True, on_step=False, on_epoch=True)
+        self._update_val_metrics(outputs, batch)
         self._log_parts("val", parts)
         return loss
+
+    def on_validation_epoch_end(self) -> None:
+        """Log epoch-level validation selection metrics."""
+        self.log("val/diag_macro_f1", self.val_diag_macro_f1.compute(), prog_bar=True)
+        self.val_diag_macro_f1.reset()
 
     def configure_optimizers(self) -> Any:
         """Use AdamW with cosine decay over configured total steps."""
@@ -123,3 +131,15 @@ class AgeWellINLightning(L.LightningModule):
     def _log_parts(self, prefix: str, parts: Mapping[str, Tensor]) -> None:
         for name, value in parts.items():
             self.log(f"{prefix}/{name}", value, on_step=prefix == "train", on_epoch=True)
+
+    def _update_val_metrics(self, outputs: Mapping[str, Any], batch: Mapping[str, Any]) -> None:
+        labels = _tensor(batch["diag_label"]).to(device=_tensor(outputs["diag_logits"]).device)
+        labels = labels.long()
+        mask = labels >= 0
+        if bool(mask.any()):
+            predictions = _tensor(outputs["diag_logits"])[mask].argmax(dim=-1)
+            self.val_diag_macro_f1.update(predictions, labels[mask])
+
+
+def _tensor(value: Any) -> Tensor:
+    return value if isinstance(value, Tensor) else torch.as_tensor(value)

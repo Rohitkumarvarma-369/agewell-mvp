@@ -99,16 +99,16 @@ fresh-setup:
 	./scripts/setup_fresh_machine.sh $(SETUP_ARGS)
 
 train_teacher:
-	uv run python -m agewell.scripts.train_teacher
+	uv run python -m agewell.scripts.train_teacher $(TRAIN_ARGS)
 
 train_student:
-	uv run python -m agewell.scripts.train_student
+	uv run python -m agewell.scripts.train_student $(TRAIN_ARGS)
 
 calibrate:
-	uv run python -m agewell.scripts.calibrate
+	uv run python -m agewell.scripts.calibrate $(CALIBRATE_ARGS)
 
 evaluate:
-	uv run python -m agewell.scripts.evaluate
+	uv run python -m agewell.scripts.evaluate $(EVALUATE_ARGS)
 
 baseline: build_master train_teacher train_student calibrate evaluate
 

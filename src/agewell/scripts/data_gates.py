@@ -9,6 +9,7 @@ import pandas as pd
 
 from agewell.config import load_cfg, repo_root
 from agewell.data.freesurfer_columns import canonical_freesurfer_columns
+from agewell.data.split_sync import verify_splits_synced
 
 
 def main() -> None:
@@ -62,6 +63,7 @@ def main() -> None:
     assert 0.65 <= ratios["train"] <= 0.75, ratios
     assert 0.10 <= ratios["calib"] <= 0.20, ratios
     assert 0.10 <= ratios["test"] <= 0.20, ratios
+    verify_splits_synced(master_path=master_path, splits_dir=splits_dir, strict_paths=True)
     print("Phase 1 data gates passed")
 
 
