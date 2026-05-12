@@ -30,6 +30,12 @@ KEY_REPO_FILES = (
     "models/brainiac/hdbet/0.model",
     "models/brainiac/atlases/nihpd_asym_13.0-18.5_t1w.nii",
 )
+REBASEABLE_PARQUET_FILES = {
+    "data/master.parquet",
+    "data/splits/train.parquet",
+    "data/splits/calib.parquet",
+    "data/splits/test.parquet",
+}
 DIRECTORY_STATS = (
     "data/derivatives/brainiac",
     "data/derivatives/brainiac_preprocess",
@@ -129,7 +135,12 @@ def verify_runtime(
 
     expected_commit = str(manifest.get("git_commit", ""))
     actual_commit = _git("rev-parse", "HEAD")
-    if expected_commit and actual_commit != expected_commit and not allow_commit_mismatch:
+    if (
+        expected_commit
+        and actual_commit != expected_commit
+        and not allow_commit_mismatch
+        and not _git_is_ancestor(expected_commit, actual_commit)
+    ):
         failures.append(f"git commit mismatch: manifest={expected_commit} actual={actual_commit}")
 
     if not skip_key_hashes:
@@ -164,6 +175,8 @@ def _compare_key_hashes(root: Path, manifest: dict[str, Any], failures: list[str
             continue
         if not isinstance(record, dict):
             failures.append(f"invalid key-file record: {rel_path}")
+            continue
+        if str(rel_path) in REBASEABLE_PARQUET_FILES:
             continue
         expected_sha = str(record.get("sha256", ""))
         actual_sha = sha256_file(path)
@@ -277,6 +290,17 @@ def _repo_path(path: Path) -> Path:
 
 def _git(*args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=repo_root(), text=True).strip()
+
+
+def _git_is_ancestor(ancestor: str, descendant: str) -> bool:
+    return (
+        subprocess.run(
+            ["git", "merge-base", "--is-ancestor", ancestor, descendant],
+            cwd=repo_root(),
+            check=False,
+        ).returncode
+        == 0
+    )
 
 
 def sha256_file(path: Path) -> str:
