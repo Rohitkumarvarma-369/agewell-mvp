@@ -1,6 +1,7 @@
 .PHONY: bootstrap up down logs health phase2-up phase2-health test test-unit test-integration lint format clean \
         build_master split eda data-gates dvc-init dvc-pin phase1 \
         phase2-smoke phase2-dvc-pin \
+        runtime-bundle runtime-hydrate runtime-verify fresh-setup \
         train_teacher train_student calibrate evaluate demo baseline \
         agent serve dashboard
 
@@ -83,6 +84,19 @@ phase2-dvc-pin: dvc-init
 	uv run dvc add data/master.parquet
 	@test ! -d data/derivatives/brainiac || uv run dvc add data/derivatives/brainiac
 	@test ! -d data/derivatives/brainiac_preprocess || uv run dvc add data/derivatives/brainiac_preprocess
+
+runtime-bundle:
+	./scripts/create_runtime_bundle.sh $(OUT_DIR)
+
+runtime-hydrate:
+	@test -n "$(ARTIFACT)" || (echo "Set ARTIFACT=/path/or/url/to/archive" >&2; exit 1)
+	./scripts/hydrate_runtime.sh "$(ARTIFACT)"
+
+runtime-verify:
+	./scripts/verify_runtime.sh $(VERIFY_ARGS)
+
+fresh-setup:
+	./scripts/setup_fresh_machine.sh $(SETUP_ARGS)
 
 train_teacher:
 	uv run python -m agewell.scripts.train_teacher

@@ -8,6 +8,10 @@
 .coverage
 htmlcov/
 outputs/
+.runtime/
+runtime-artifacts/
+agewell-runtime-*.tar.gz
+agewell-runtime-*.tar.zst
 data.pre_import_*/
 local_data_backup_*/
 data/*
