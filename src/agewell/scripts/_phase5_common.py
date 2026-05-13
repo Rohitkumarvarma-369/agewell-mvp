@@ -8,6 +8,8 @@ import json
 import math
 import shutil
 import subprocess
+import sys
+import time
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -90,6 +92,7 @@ def add_eval_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--tabpfn-estimators", type=int, default=None)
     parser.add_argument("--output-dir", default="")
     parser.add_argument("--fake-encoders", action="store_true")
+    parser.add_argument("--no-progress", action="store_true")
     parser.add_argument("overrides", nargs="*", help="Hydra overrides")
 
 
@@ -303,9 +306,13 @@ def collect_predictions(
     batch_size: int,
     device: torch.device,
     mode: str = "observed",
+    progress: bool = False,
+    progress_label: str = "",
 ) -> tuple[dict[str, np.ndarray], pd.DataFrame]:
     """Run batched inference for one split and return arrays plus metadata."""
     rows = _split_df(dm, split).reset_index(drop=True)
+    total_batches = max(math.ceil(len(rows) / max(batch_size, 1)), 1)
+    started = time.monotonic()
     module.to(device)
     module.eval()
     collected: dict[str, list[np.ndarray]] = {
@@ -322,7 +329,7 @@ def collect_predictions(
         "has_cdr": [],
     }
     with torch.no_grad():
-        for start in range(0, len(rows), batch_size):
+        for batch_idx, start in enumerate(range(0, len(rows), batch_size), start=1):
             frame = rows.iloc[start : start + batch_size]
             batch = move_batch_to_device(dm.collate_rows(frame.to_dict(orient="records")), device)
             outputs = module.model(
@@ -344,6 +351,13 @@ def collect_predictions(
                 "has_cdr",
             ):
                 _append_output(collected, key, batch[key])
+            if progress:
+                _print_progress(
+                    label=progress_label or f"{split}:{mode}",
+                    batch_idx=batch_idx,
+                    total_batches=total_batches,
+                    started=started,
+                )
     arrays = {key: np.concatenate(value, axis=0) for key, value in collected.items()}
     return arrays, rows
 
@@ -444,6 +458,34 @@ def _presence_override(
 def _append_output(collected: dict[str, list[np.ndarray]], key: str, value: Any) -> None:
     tensor = value if isinstance(value, Tensor) else torch.as_tensor(value)
     collected[key].append(tensor.detach().cpu().numpy())
+
+
+def _print_progress(
+    *,
+    label: str,
+    batch_idx: int,
+    total_batches: int,
+    started: float,
+) -> None:
+    elapsed = time.monotonic() - started
+    seconds_per_batch = elapsed / max(batch_idx, 1)
+    remaining = max(total_batches - batch_idx, 0) * seconds_per_batch
+    sys.stderr.write(
+        f"[phase5] {label} batch {batch_idx}/{total_batches} "
+        f"elapsed={_format_duration(elapsed)} eta={_format_duration(remaining)}\n"
+    )
+    sys.stderr.flush()
+
+
+def _format_duration(seconds: float) -> str:
+    total = max(int(seconds), 0)
+    hours, rem = divmod(total, 3600)
+    minutes, secs = divmod(rem, 60)
+    if hours:
+        return f"{hours:d}h{minutes:02d}m{secs:02d}s"
+    if minutes:
+        return f"{minutes:d}m{secs:02d}s"
+    return f"{secs:d}s"
 
 
 def _split_df(dm: AgeWellDataModule, split: str) -> pd.DataFrame:

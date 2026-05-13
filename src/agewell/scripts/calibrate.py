@@ -38,6 +38,8 @@ def main() -> None:
         batch_size=batch_size,
         device=device,
         mode="observed",
+        progress=not bool(args.no_progress),
+        progress_label=f"calibrate:{args.split}:observed",
     )
     result = fit_temperature(arrays["diag_logits"], arrays["diag_label"])
     output_dir = Path(args.output_dir) if args.output_dir else Path(args.checkpoint).parent.parent

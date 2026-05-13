@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -51,7 +52,10 @@ def main() -> None:
     }
     observed_arrays = None
     observed_rows = None
-    for mode in modes:
+    for mode_idx, mode in enumerate(modes, start=1):
+        if not bool(args.no_progress):
+            sys.stderr.write(f"[phase5] evaluate mode {mode_idx}/{len(modes)}: {mode}\n")
+            sys.stderr.flush()
         arrays, rows = collect_predictions(
             module,
             dm,
@@ -59,6 +63,8 @@ def main() -> None:
             batch_size=batch_size,
             device=device,
             mode=mode,
+            progress=not bool(args.no_progress),
+            progress_label=f"evaluate:{args.split}:{mode}",
         )
         all_metrics["modes"][mode] = compute_phase5_metrics(
             arrays,
