@@ -8,6 +8,8 @@
 .coverage
 htmlcov/
 outputs/
+train-results/
+handovers/
 .runtime/
 runtime-artifacts/
 agewell-runtime-*.tar.gz
